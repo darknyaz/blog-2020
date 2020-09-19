@@ -1,11 +1,31 @@
 <html>
+
+<head>
+  <title>Flask app</title>
+  <link rel="stylesheet"
+        href="{{ url_for('static', filename='style/main.css') }}">
+</head>
+
 <body>
-  <ul>
-   {% if username %}
-     <li>User: {{ username }}</li>
-   {% else %}
-     <li>No logged in</li>
-   {% endif %}
+  <ul class="ul-main-menu">
+  {% if username %}
+    <li>User: {{ username }}</li>
+  {% else %}
+    <li>
+      <form action="/login" id="form-log-in" method="post"/>
+        <label for="login">Login: </label>
+        <input id="input-login" name="login" type="text" form="form-log-in"/>
+      </form>
+    </li>
+    <li>
+      <label for="password">Password: </label>
+      <input id="input-password" name="password" type="text" form="form-log-in"/>
+    </li>
+    <li>
+      <button type="submit" form="form-log-in">Login</button>
+    </li>
+  {% endif %}
   </ul>
 <body>
+
 </html>
