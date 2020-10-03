@@ -26,6 +26,19 @@
     </li>
   {% endif %}
   </ul>
+
+  {% for message in messages%}
+    <table style="width:100%">
+      {% if message[0] == 1 %}
+        <tr><td><h3>Pinned message</h3></td></tr>
+      {% endif %}
+      <tr>
+        <td>{{ message[3] }}</td>
+        <td>{{ message[2] }}</td>
+      </tr>
+      <tr><td>{{ message[4] }}</td></tr>
+    </table>
+  {% endfor %}
 <body>
 
 </html>

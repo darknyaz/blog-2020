@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, make_response, redirect
-from src.db import db
+from src.db.db import DB
+from src.msg.msg import MH
 app = Flask(__name__)
-DB = db.DbConnection()
+
 
 @app.route('/')
 def hello_world():
@@ -14,7 +15,9 @@ def hello_world():
         if user_rec:
             username = user_rec[0]
 
-    return render_template('index.html', username=username)
+    return render_template(
+        'index.html', username=username, messages=MH.messages)
+
 
 @app.route('/login', methods=['POST'])
 def login_handler():
