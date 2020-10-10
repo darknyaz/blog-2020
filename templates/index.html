@@ -8,8 +8,8 @@
 
 <body>
   <ul class="ul-main-menu">
-  {% if username %}
-    <li>User: {{ username }}</li>
+  {% if data['username'] %}
+    <li>User: {{ data['username'] }}</li>
   {% else %}
     <li>
       <form action="/login" id="form-log-in" method="post"/>
@@ -27,7 +27,7 @@
   {% endif %}
   </ul>
 
-  {% for message in messages%}
+  {% for message in data['messages']%}
     <table style="width:100%">
       {% if message[0] == 1 %}
         <tr><td><h3>Pinned message</h3></td></tr>
@@ -35,6 +35,11 @@
       <tr>
         <td>{{ message[3] }}</td>
         <td>{{ message[2] }}</td>
+        <td>
+          {% if 1 in data['uid_rids'] or data['uid'] == message[1] %}
+            <a href="/delmsg?id={{ message[0] }}">Delete</a>
+          {% endif %}
+        </td>
       </tr>
       <tr><td>{{ message[4] }}</td></tr>
     </table>
