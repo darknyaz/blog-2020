@@ -1,3 +1,4 @@
+import src.session.session as session
 from flask import Flask, render_template, request, make_response, redirect
 from src.db.db import DB
 from src.msg.msg import MH
@@ -13,14 +14,11 @@ def hello_world():
     MH.update_messages()
 
     if login:
-        id_name_login = DB.execute_select_query(
-            'SELECT id, name, login FROM User')
-        user_rec = next(filter(lambda x: x[2] == login, id_name_login))
+        user_rec = session.get_user_rec_by_login(login)
         if user_rec:
             uid = user_rec[0]
             username = user_rec[1]
-            user_roles = [x[0] for x in DB.execute_select_query(
-                f'SELECT rid FROM UserRole WHERE uid = {uid}')]
+            user_roles = session.get_rids_by_uid(uid)
 
     return render_template(
         'index.html',
@@ -52,12 +50,23 @@ def login_handler():
         return '', 500
 
     response = make_response(redirect('/'))
-    response.set_cookie('login', user_rec[1])
+    response.set_cookie('login', user_rec[1], samesite='Strict')
     return response
 
 
 @app.route('/delmsg', methods=['GET'])
 def delete_message_handler():
-    message_id = request.args.get('id')
+    user_rec = session.get_user_rec_by_login(request.cookies.get('login'))
+
+    if not user_rec:
+        return '', 500
+
+    message_id = int(request.args.get('id'))
+
+    message = next((x for x in MH.messages if x[0] == message_id))
+
+    if not (user_rec[0] == 1 or user_rec[0] == message[1]):
+        return '', 500
+
     MH.delete_message(message_id)
     return make_response(redirect('/'))
